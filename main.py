@@ -1,16 +1,16 @@
-from flask import Flask
+from flask import Flask, render_template
 
 app = Flask(__name__)
 
 
 @app.route('/')
 def home():
-    return 'Coe Lira, meu 1º site ta no ar!!!!! To sabendo muito'
+    return render_template('home.html')
 
 
 @app.route('/contato')
 def contato():
-    return 'Qualquer dúvida mande um e-mail para listavip@hashtagtreinamentos.com'
+    return render_template('contato.html')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,7 @@
+{
+  "hints": [
+    "html-checker",
+    "doctype-first",
+    "meta-charset-utf-8"
+  ]
+}
