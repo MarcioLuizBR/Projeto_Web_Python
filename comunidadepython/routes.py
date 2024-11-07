@@ -3,6 +3,9 @@ from comunidadepython import app, database, bcrypt
 from comunidadepython.forms import FormLogin, FormCriarConta, FormEditarPerfil
 from comunidadepython.models import Usuario
 from flask_login import login_user, logout_user, current_user, login_required
+import secrets
+import os
+from PIL import Image
 
 lista_usuarios = ['Marcio', 'Luiz', 'Ana', 'Kelen', 'Samuel', 'Aquilles']
 
@@ -68,9 +71,39 @@ def perfil():
 def criar_post():
     return render_template('criarpost.html')
 
+
+def salvar_imagem(imagem):
+    # adicionar um codigo aleatorio no nome da imagem
+    codigo = secrets.token_hex(8)
+    nome, extensao = os.path.splitext(imagem.filename)
+    nome_arquivo = nome + codigo + extensao
+    caminho_completo = os.path.join(app.root_path, 'static/fotos_perfil', nome_arquivo)
+    # reduzir o tamanho da imagem
+    tamanho = (400, 400
+               )
+    imagem_reduzida = Image.open(imagem)
+    imagem_reduzida.thumbnail(tamanho)
+    # salvar a imagem na pasta fotos_perfil
+    imagem_reduzida.save(caminho_completo)
+    # mudar o campo foto_perfil do usuario para o novo nome da imagem
+    return nome_arquivo
+
 @app.route('/perfil/editar', methods=['GET', 'POST'])
 @login_required
 def editar_perfil():
     form = FormEditarPerfil()
+    if form.validate_on_submit():
+        current_user.email = form.email.data
+        current_user.username = form.username.data
+        if form.foto_perfil.data:
+            nome_imagem = salvar_imagem(form.foto_perfil.data)
+            current_user.foto_perfil = nome_imagem
+            
+        database.session.commit()
+        flash('Perfil atualizado com sucesso.', 'alert-success')
+        return redirect(url_for('perfil'))
+    elif request.method == 'GET':
+        form.email.data = current_user.email
+        form.username.data = current_user.username
     foto_perfil = url_for('static', filename='fotos_perfil/{}'.format(current_user.foto_perfil))
     return render_template('editarperfil.html', foto_perfil=foto_perfil, form=form)

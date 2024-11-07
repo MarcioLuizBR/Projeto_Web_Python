@@ -5,7 +5,7 @@
     <hr>
     <div class="row">
         <div class="col">
-            <form method="POST" action="" class="border p-4 mt-2">
+            <form method="POST" action="" class="border p-4 mt-2" enctype="multipart/form-data">
                 {{ form.csrf_token }}
                 <legend>Login</legend>
                 <fieldset>
@@ -36,6 +36,16 @@
                         {% else %}
                             {{ form.email(class="form-control") }}
                         {% endif%}
+                    </div class="form-group">
+                        {{ form.foto_perfil.lab }}
+                        {{ form.foto_perfil(class="form-control-file") }}
+                        {% if form.foto_perfil.erros %}
+                            {%for erro in form.foto_perfil.erros %}
+                                <span class="text-danger">{{ erro }}</span><br>
+                            {% endfor %}
+                        {% endif %}
+                    <div>
+
                     </div>
           
                 </fieldset>
