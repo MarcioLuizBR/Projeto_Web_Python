@@ -1,4 +1,5 @@
+*.db
+
 .venv
-Configurações do Projeto e Instalação do Flask
+
 __pycache__
-comunidade.db
